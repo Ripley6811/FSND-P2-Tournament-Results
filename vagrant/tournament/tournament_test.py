@@ -68,9 +68,10 @@ def testStandingsBeforeMatches():
                          "they have played any matches.")
     elif len(standings) > 2:
         raise ValueError("Only registered players should appear in standings.")
-    if len(standings[0]) != 4:
-        raise ValueError("Each playerStandings row should have four columns.")
-    [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
+    if len(standings[0]) != 6:
+        raise ValueError("Each playerStandings row should have six columns.")
+    [(id1, name1, wins1, matches1, byes1, omw1), 
+     (id2, name2, wins2, matches2, byes2, omw2)] = standings
     if matches1 != 0 or matches2 != 0 or wins1 != 0 or wins2 != 0:
         raise ValueError(
             "Newly registered players should have no matches or wins.")
@@ -92,7 +93,7 @@ def testReportMatches():
     reportMatch(id1, id2)
     reportMatch(id3, id4)
     standings = playerStandings()
-    for (i, n, w, m) in standings:
+    for (i, n, m, w, b, o) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
         if i in (id1, id3) and w != 1:
@@ -110,7 +111,7 @@ def testPairings():
     registerPlayer("Applejack")
     registerPlayer("Pinkie Pie")
     standings = playerStandings()
-    [id1, id2, id3, id4] = [row[0] for row in standings]
+    [id1, id2, id3, id4] = [row[0] for row in standings][:4]
     reportMatch(id1, id2)
     reportMatch(id3, id4)
     pairings = swissPairings()
@@ -126,6 +127,64 @@ def testPairings():
     print "8. After one match, players with one win are paired."
 
 
+def testByeSwap():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Bruno Walton")
+    registerPlayer("Boots O'Neal")
+    registerPlayer("Cathy Burton")
+    registerPlayer("Diane Grant")
+    registerPlayer("Dick Solomon")
+    registerPlayer("John McClane")
+    registerPlayer("Alex Murphy")
+    standings = playerStandings()
+    pairings1 = swissPairings()
+    # Give everyone a bye to test last place swapping.
+    [reportMatch(s[0]) for s in standings]
+    pairings2 = swissPairings()
+    if pairings1 == pairings2:
+        raise ValueError(
+            "No players were swapped after giving everyone a bye.")
+    if pairings1[:-2] != pairings2[:-2]:
+        raise ValueError(
+            "Players changed position in other parts of the list besides the end.")
+    print "9. Last player is swapped if he has a bye."
+
+    
+def testOMW():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Bruno Walton")
+    registerPlayer("Boots O'Neal")
+    registerPlayer("Cathy Burton")
+    registerPlayer("Diane Grant")
+    registerPlayer("Dick Solomon")
+    registerPlayer("John McClane")
+    registerPlayer("Alex Murphy")
+    standings = playerStandings()
+    # Round 1
+    reportMatch(standings[0][0], standings[1][0])
+    reportMatch(standings[2][0], standings[3][0])
+    reportMatch(standings[4][0], standings[5][0])
+    reportMatch(standings[6][0], None)
+    # Round 2
+    reportMatch(standings[0][0], standings[2][0])
+    reportMatch(standings[4][0], standings[6][0])
+    reportMatch(standings[1][0], standings[5][0])
+    reportMatch(standings[3][0], None)
+    # Round 3
+    reportMatch(standings[4][0], standings[0][0])
+    reportMatch(standings[2][0], standings[3][0])
+    reportMatch(standings[6][0], standings[5][0])
+    reportMatch(standings[1][0], None)
+    
+    standings = playerStandings()
+    if standings[0][5] != 4:
+        raise ValueError(
+            "First player in standings should have an OMW of 4")
+    print "10. Player standings include the OMW."
+
+
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
@@ -136,4 +195,8 @@ if __name__ == '__main__':
     testReportMatches()
     testPairings()
     print "Success!  All tests pass!"
+    
+    testByeSwap()
+    testOMW()
+    print "Success!  More tests pass!"
 
