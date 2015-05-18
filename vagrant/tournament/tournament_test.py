@@ -6,18 +6,21 @@ from tournament import *
 
 def testDeleteMatches():
     deleteMatches()
+    newTournament()
     print "1. Old matches can be deleted."
 
 
 def testDelete():
     deleteMatches()
     deletePlayers()
+    newTournament()
     print "2. Player records can be deleted."
 
 
 def testCount():
     deleteMatches()
     deletePlayers()
+    newTournament()
     c = countPlayers()
     if c == '0':
         raise TypeError(
@@ -30,6 +33,7 @@ def testCount():
 def testRegister():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Chandra Nalaar")
     c = countPlayers()
     if c != 1:
@@ -41,6 +45,7 @@ def testRegister():
 def testRegisterCountDelete():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Markov Chaney")
     registerPlayer("Joe Malik")
     registerPlayer("Mao Tsu-hsi")
@@ -59,6 +64,7 @@ def testRegisterCountDelete():
 def testStandingsBeforeMatches():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Melpomene Murray")
     registerPlayer("Randy Schwartz")
     standings = playerStandings()
@@ -84,6 +90,7 @@ def testStandingsBeforeMatches():
 def testReportMatches():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
     registerPlayer("Cathy Burton")
@@ -106,6 +113,7 @@ def testReportMatches():
 def testPairings():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Twilight Sparkle")
     registerPlayer("Fluttershy")
     registerPlayer("Applejack")
@@ -130,6 +138,7 @@ def testPairings():
 def testByeSwap():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
     registerPlayer("Cathy Burton")
@@ -154,6 +163,7 @@ def testByeSwap():
 def testOMW():
     deleteMatches()
     deletePlayers()
+    newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
     registerPlayer("Cathy Burton")
