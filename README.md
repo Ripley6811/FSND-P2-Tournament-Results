@@ -59,7 +59,7 @@ SQL database interface methods. Methods for deleting and creating tournaments,
 players and matches and retreiving data.
 
 ####`tournament_test.py`
-Test cases for `tournament.ps` methods.
+Test cases for `tournament.py` methods.
 
 
 
@@ -90,7 +90,7 @@ storing who has signed up for particular tournaments.
 ----+---------------+-------
 ```
 
-**`results`** - Stores the match id, player id and whether they lost or won.
+**`results`** - Stores the match id, player id and whether they won (boolean).
 ```
  match_id | player_id | winner
 ----------+-----------+--------
