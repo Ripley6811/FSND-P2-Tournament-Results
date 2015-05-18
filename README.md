@@ -1,7 +1,7 @@
 Tournament Project
 ==================
 
-### Summary
+## Summary
 This is a exercise in working with PostgreSQL. All **SQL** code was written by me.
 Testing methods in `tournament_test.py` were provided by Udacity for testing SQL
 functionality. Testing code was further altered by me to support advanced features
@@ -24,7 +24,7 @@ then *omw*.
 The `reportMatch` function was altered to except `None` or be omitted for *loser*,
 this giving the *winner* a 'bye'.
 
-### Instructions
+## Instructions
 1. **Virtual Machine setup:** 
 Follow the instructions [here (on Google docs)](https://docs.google.com/document/d/16IgOm4XprTaKxAa8w02y028oBECOoB1EI1ReddADEeY/pub?embedded=true)
 to set up the Vagrant virtual machine used in this project.
@@ -49,7 +49,8 @@ Leave the `psql` interface and run tournament_test.py for virtual machine prompt
     ...
     ```
 
-### Database Design
+## Database Design
+#### Tables
 **`players`** - Stores player name and database ID.
 ```
  id | name
@@ -81,6 +82,7 @@ storing who has signed up for particular tournaments.
 ----------+-----------+--------
 ```
 
+#### Views
 **_`match_details`_** - A view showing all information for a particular match.
 Relies on `players`, `matches` and `results` tables.
 ```
