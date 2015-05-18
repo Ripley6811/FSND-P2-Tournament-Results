@@ -4,7 +4,7 @@
 #
 
 import psycopg2
-import itertools
+from itertools import izip_longest
 import math
 
 
@@ -26,6 +26,7 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
     con, cur = connect()
+    cur.execute('DELETE FROM tournament_register;')
     cur.execute('DELETE FROM players;')
     con.commit()
     con.close()
@@ -42,23 +43,53 @@ def deleteTournaments():
 def countPlayers():
     """Returns the number of players currently registered."""
     con, cur = connect()
-    cur.execute('SELECT count(*) FROM players;')
+    cur.execute('SELECT count(*) FROM current_players;')
     player_count = cur.fetchone()[0]
     con.close()
     return player_count
 
 
+def newTournament(title=''):
+    """Returns the ID for the new tournament record in database.
+    
+    Args:
+      title: The name given to the tournament. (OPTIONAL)
+    """
+    con, cur = connect()
+    cur.execute('INSERT INTO tournaments (title) VALUES (%s) RETURNING id;', (title,))
+    tournament_id = cur.fetchone()[0]
+    con.commit()
+    con.close()
+    return tournament_id
+
+
+def getTournamentID():
+    """Returns the ID for the currently open tournament in the database."""
+    con, cur = connect()
+    cur.execute('SELECT id FROM tournaments ORDER BY created DESC LIMIT 1;')
+    tournament_id = cur.fetchone()
+    con.close()
+    return tournament_id
+    
+
+
 def registerPlayer(name):
     """Adds a player to the tournament database.
   
-    The database assigns a unique serial id number for the player.  (This
-    should be handled by your SQL database schema, not in your Python code.)
+    The database assigns a unique serial id number for the player.  The player
+    is added to the tournament register for the current tournament.
   
     Args:
       name: the player's full name (need not be unique).
     """
+    tournament_id = getTournamentID()
+    
     con, cur = connect()
-    cur.execute('INSERT INTO players (name) VALUES (%s);', (name,))
+    cur.execute('INSERT INTO players (name) VALUES (%s) RETURNING id;', (name,))
+    player_id = cur.fetchone()[0]
+    cur.execute(
+        'INSERT INTO tournament_register (tournament_id, player_id) VALUES (%s, %s);', 
+        (tournament_id, player_id))
     con.commit()
     con.close()
 
@@ -86,16 +117,19 @@ def playerStandings():
     return winner_list
 
 
-def reportMatch(winner, loser=None):
+def reportMatch(winner, loser=None, round=1):
     """Records the outcome of a single match between two players or for reporting
     a default win or 'bye'.
 
     Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost, or None for 'bye'
+      winner:  the id number of the player who won.
+      loser:  the id number of the player who lost, or None for 'bye'.
+      round:  the round number.
     """
+    tournament_id = getTournamentID()
+    
     con, cur = connect()
-    cur.execute('INSERT INTO matches (id, round) VALUES (DEFAULT, 1) RETURNING id')
+    cur.execute('INSERT INTO matches (tournament_id, round) VALUES (%s, %s) RETURNING id', (tournament_id, round))
     match_id = cur.fetchone()[0]
     cur.execute('INSERT INTO results (match_id, player_id, winner) VALUES (%s, %s, %s)', 
                 (match_id, winner, True))
@@ -128,7 +162,7 @@ def swissPairings():
     players_data = playerStandings()
     # Organize in to pairings and return list.
     ret_list = []
-    for a, b in itertools.izip_longest(players_data[::2], players_data[1::2]):
+    for a, b in izip_longest(players_data[::2], players_data[1::2]):
         if b:
             ret_list.append((a[0], a[1], b[0], b[1]))
         else:

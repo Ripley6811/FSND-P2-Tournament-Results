@@ -18,8 +18,8 @@ def testDelete():
 
 
 def testCount():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     c = countPlayers()
     if c == '0':
@@ -31,8 +31,8 @@ def testCount():
 
 
 def testRegister():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Chandra Nalaar")
     c = countPlayers()
@@ -43,8 +43,8 @@ def testRegister():
 
 
 def testRegisterCountDelete():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Markov Chaney")
     registerPlayer("Joe Malik")
@@ -62,8 +62,8 @@ def testRegisterCountDelete():
 
 
 def testStandingsBeforeMatches():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Melpomene Murray")
     registerPlayer("Randy Schwartz")
@@ -88,8 +88,8 @@ def testStandingsBeforeMatches():
 
 
 def testReportMatches():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
@@ -111,8 +111,8 @@ def testReportMatches():
 
 
 def testPairings():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Twilight Sparkle")
     registerPlayer("Fluttershy")
@@ -136,8 +136,8 @@ def testPairings():
 
 
 def testByeSwap():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
@@ -151,18 +151,15 @@ def testByeSwap():
     # Give everyone a bye to test last place swapping.
     [reportMatch(s[0]) for s in standings]
     pairings2 = swissPairings()
-    if pairings1 == pairings2:
+    if pairings1[-2:] == pairings2[-2:]:
         raise ValueError(
             "No players were swapped after giving everyone a bye.")
-    if pairings1[:-2] != pairings2[:-2]:
-        raise ValueError(
-            "Players changed position in other parts of the list besides the end.")
     print "9. Last player is swapped if he has a bye."
 
     
 def testOMW():
-    deleteMatches()
-    deletePlayers()
+#    deleteMatches()
+#    deletePlayers()
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
@@ -173,20 +170,20 @@ def testOMW():
     registerPlayer("Alex Murphy")
     standings = playerStandings()
     # Round 1
-    reportMatch(standings[0][0], standings[1][0])
-    reportMatch(standings[2][0], standings[3][0])
-    reportMatch(standings[4][0], standings[5][0])
-    reportMatch(standings[6][0], None)
+    reportMatch(standings[0][0], standings[1][0], 1)
+    reportMatch(standings[2][0], standings[3][0], 1)
+    reportMatch(standings[4][0], standings[5][0], 1)
+    reportMatch(standings[6][0], None, 1)
     # Round 2
-    reportMatch(standings[0][0], standings[2][0])
-    reportMatch(standings[4][0], standings[6][0])
-    reportMatch(standings[1][0], standings[5][0])
-    reportMatch(standings[3][0], None)
+    reportMatch(standings[0][0], standings[2][0], 2)
+    reportMatch(standings[4][0], standings[6][0], 2)
+    reportMatch(standings[1][0], standings[5][0], 2)
+    reportMatch(standings[3][0], None, 2)
     # Round 3
-    reportMatch(standings[4][0], standings[0][0])
-    reportMatch(standings[2][0], standings[3][0])
-    reportMatch(standings[6][0], standings[5][0])
-    reportMatch(standings[1][0], None)
+    reportMatch(standings[4][0], standings[0][0], 3)
+    reportMatch(standings[2][0], standings[3][0], 3)
+    reportMatch(standings[6][0], standings[5][0], 3)
+    reportMatch(standings[1][0], None, 3)
     
     standings = playerStandings()
     if standings[0][5] != 4:

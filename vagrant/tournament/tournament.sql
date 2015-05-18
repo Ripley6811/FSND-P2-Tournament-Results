@@ -1,25 +1,28 @@
 -- Table definitions for the tournament project.
 --
--- Put your SQL 'create table' statements in this file; also 'create view'
--- statements if you choose to use it.
+-- SQL 'create table' and 'create view' statements
 --
--- You can write comments in this file by starting them with two dashes, like
--- these lines here.
+-- Usage:
+-- At "vagrant=>" prompt, enter "\i tournament.sql"
+-- You should see confirmation that tables and views were created or that
+-- they already existed.
+--
+-- Remember: Always put string and date values inside single quotes.
 
 CREATE DATABASE tournament;
 \c tournament;
 
 
 CREATE TABLE players (  
-       id serial PRIMARY KEY,
-       name text
+    id serial PRIMARY KEY,
+    name text
 );
 
 
 CREATE TABLE tournaments (
     id serial PRIMARY KEY,
     title text NULL,
-    created date default 'now()'
+    created timestamp default CURRENT_TIMESTAMP
 );
 
 
@@ -45,6 +48,24 @@ CREATE TABLE results (
 );
 
 
+CREATE VIEW current_tournament AS
+SELECT id FROM tournaments ORDER BY created DESC LIMIT 1;
+
+
+CREATE VIEW current_results AS
+SELECT match_id, player_id, winner 
+FROM results 
+JOIN matches ON matches.id = results.match_id 
+WHERE matches.tournament_id = (SELECT * FROM current_tournament);
+
+
+CREATE VIEW current_players AS
+SELECT id, name 
+FROM players
+JOIN tournament_register ON tournament_register.player_id = players.id 
+WHERE tournament_register.tournament_id = (SELECT * FROM current_tournament);
+
+
 CREATE VIEW match_details AS 
 SELECT wintable.match_id, 
        tournament_id,
@@ -58,35 +79,42 @@ FROM (
            tournament_id,
            round,
            player_id as winner_id
-    FROM matches LEFT JOIN results ON matches.id = results.match_id WHERE results.winner = True
+    FROM matches 
+    LEFT JOIN current_results ON matches.id = current_results.match_id 
+    WHERE current_results.winner = True
 ) AS wintable
-LEFT JOIN results ON wintable.match_id = results.match_id AND results.winner = False
+LEFT JOIN current_results ON wintable.match_id = current_results.match_id AND current_results.winner = False
+WHERE tournament_id = (SELECT * FROM current_tournament)
 ORDER BY tournament_id, round;
 
 
 CREATE VIEW player_OMW AS
-SELECT winner, COALESCE(CAST(SUM(wins_total) AS bigint), 0) as OMW
+SELECT winner as id, COALESCE(CAST(SUM(wins_total) AS bigint), 0) as OMW
 FROM match_details
-LEFT JOIN (SELECT player_id, COUNT(CASE WHEN winner = True THEN 1 END) AS wins_total FROM results GROUP BY player_id) AS bar ON match_details.loser_id = bar.player_id
-GROUP BY winner;
+LEFT JOIN (
+    SELECT player_id, COUNT(CASE WHEN winner = True THEN 1 END) AS wins_total 
+    FROM current_results
+    GROUP BY player_id
+) AS wins_counter 
+ON match_details.loser_id = wins_counter.player_id
+GROUP BY id;
 
 
 CREATE VIEW player_standings AS
-SELECT players.id, -- Add player name to returned table.
-       players.name, 
-       (SELECT COUNT(*) FROM results WHERE player_id = players.id) AS matches,
-       COALESCE(foo.cwin, 0) AS wins, 
-       COALESCE(foo.byes, 0) AS byes,
-       COALESCE((SELECT omw FROM player_omw WHERE players.name = winner), 0) AS omw
-FROM players LEFT JOIN (
+SELECT current_players.id, -- Add player name to returned table.
+       current_players.name, 
+       (SELECT COUNT(*) FROM current_results WHERE player_id = current_players.id) AS matches,
+       COALESCE(player_counts.cwin, 0) AS wins, 
+       COALESCE(player_counts.byes, 0) AS byes,
+       COALESCE((SELECT omw FROM player_omw WHERE current_players.name = id), 0) AS omw
+FROM current_players LEFT JOIN (
     SELECT winner_id, -- Get count of each player's total matches and total wins.
            COUNT(winner_id) AS cwin, 
            COUNT(CASE WHEN loser_id IS NULL THEN 1 END) AS byes 
     FROM match_details GROUP BY winner_id
-) AS foo
-ON players.id = foo.winner_id
+) AS player_counts
+ON current_players.id = player_counts.winner_id
 ORDER BY wins DESC, omw DESC;
 
 
-
--- Remember: In SQL, we always put string and date values inside single quotes.
+-- SELECT * FROM player_standings

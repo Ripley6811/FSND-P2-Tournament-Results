@@ -49,6 +49,20 @@ Leave the `psql` interface and run tournament_test.py for virtual machine prompt
     ...
     ```
 
+## Files
+####`tournament.sql`
+SQL code that creates a `tournament` database with tables and views. See next
+section for database design.
+
+####`tournament.py`
+SQL database interface methods. Methods for deleting and creating tournaments,
+players and matches and retreiving data.
+
+####`tournament_test.py`
+Test cases for `tournament.ps` methods.
+
+
+
 ## Database Design
 #### Tables
 **`players`** - Stores player name and database ID.
@@ -83,6 +97,15 @@ storing who has signed up for particular tournaments.
 ```
 
 #### Views
+**_`current_tournament`_** - A view with a single value showing the current
+tournament ID.
+
+**_`current_results`_** - A view of the results table only showing current
+tournament results. _Same columns as `results` table._
+
+**_`current_players`_** - A view of the players table only showing current
+tournament participants. _Same columns as `players` table._
+
 **_`match_details`_** - A view showing all information for a particular match.
 Relies on `players`, `matches` and `results` tables.
 ```
@@ -119,6 +142,7 @@ Relies on `players`, `results` tables and `match_details`, `player_omw` views.
     - [Returning auto-generated ID from `INSERT` command](http://stackoverflow.com/a/2944335/1172891)
     - [How to `COUNT` only *true* values](http://stackoverflow.com/a/7258383/1172891)
     - [How to `zip` lists of unequal length in python](http://stackoverflow.com/questions/11318977/zipping-unequal-lists-in-python-in-to-a-list-which-does-not-drop-any-element-fro)
+    - [Getting an accurate timestamp auto-entry](http://stackoverflow.com/a/9556581/1172891)
 - Udacity.com
     - [How to sanitize `INSERT` data](https://www.udacity.com/course/viewer#!/c-ud197-nd/l-3483858580/e-3515398547/m-3515398548)
 - Forums.MySQL.com
