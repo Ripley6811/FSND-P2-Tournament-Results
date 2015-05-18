@@ -14,7 +14,6 @@ psql (9.3.6)
 Type "help" for help.
 vagrant=> \i tournament.sql   
 ``` 
-
 3. **Running test suite:** Leave the `psql` interface and run tournament_test.py for virtual machine prompt.
 ```
 vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ python tournament_test.py
