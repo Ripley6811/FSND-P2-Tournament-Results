@@ -33,8 +33,7 @@ CREATE TABLE tournament_register (
 CREATE TABLE matches (
     id serial PRIMARY KEY,
     tournament_id integer REFERENCES tournaments(id),
-    round integer,
-    arena integer
+    round integer
 );
 
 
@@ -50,7 +49,6 @@ CREATE VIEW match_details AS
 SELECT wintable.match_id, 
        tournament_id,
        round,
-       arena,
        wintable.winner_id,
        (SELECT name FROM players WHERE wintable.winner_id = players.id) as winner,
        player_id AS loser_id,
@@ -59,12 +57,11 @@ FROM (
     SELECT matches.id AS match_id, 
            tournament_id,
            round,
-           arena,
            player_id as winner_id
     FROM matches LEFT JOIN results ON matches.id = results.match_id WHERE results.winner = True
 ) AS wintable
 LEFT JOIN results ON wintable.match_id = results.match_id AND results.winner = False
-ORDER BY tournament_id, round, arena;
+ORDER BY tournament_id, round;
 
 
 CREATE VIEW player_OMW AS
@@ -90,9 +87,6 @@ FROM players LEFT JOIN (
 ON players.id = foo.winner_id
 ORDER BY wins DESC, omw DESC;
 
-
-
-SELECT * FROM player_standings;
 
 
 -- Remember: In SQL, we always put string and date values inside single quotes.

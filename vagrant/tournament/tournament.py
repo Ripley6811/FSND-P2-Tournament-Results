@@ -87,7 +87,8 @@ def playerStandings():
 
 
 def reportMatch(winner, loser=None):
-    """Records the outcome of a single match between two players.
+    """Records the outcome of a single match between two players or for reporting
+    a default win or 'bye'.
 
     Args:
       winner:  the id number of the player who won
@@ -124,10 +125,10 @@ def swissPairings():
     """
     con, cur = connect()
     # Get list of registered players ordered by wins.
-    players_ranklist = playerStandings()
+    players_data = playerStandings()
     # Organize in to pairings and return list.
     ret_list = []
-    for a, b in itertools.izip_longest(players_ranklist[::2], players_ranklist[1::2]):
+    for a, b in itertools.izip_longest(players_data[::2], players_data[1::2]):
         if b:
             ret_list.append((a[0], a[1], b[0], b[1]))
         else:
