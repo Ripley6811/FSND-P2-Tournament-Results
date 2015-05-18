@@ -39,6 +39,7 @@ to set up the Vagrant virtual machine used in this project.
 
 2. **Database setup:** 
 The `tournament.sql` file contains all the code to set up the **Tournament** database, tables and views.
+Run this file at the postgresql prompt:
     ```ssh
     vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ psql
     psql (9.3.6)
