@@ -9,11 +9,10 @@ to set up the Vagrant virtual machine used in this project.
 2. **Database setup:** 
 The `tournament.sql` file contains all the code to set up the **Tournament** database, tables and views.
 
-       vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ psql
-       psql (9.3.6)
-       Type "help" for help.
-       
-       vagrant=> \i tournament.sql    
+    vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ psql
+    psql (9.3.6)
+    Type "help" for help.
+    vagrant=> \i tournament.sql    
 
 3. **Running test suite:** Leave the `psql` interface and run tournament_test.py for virtual machine prompt.
 
