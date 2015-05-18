@@ -21,8 +21,16 @@ then *omw*.
  347 | John McClane |       3 |    0 |    0 |   0
 (7 rows)
 ```
+
 The *loser* parameter in the `reportMatch` function was altered to except `None`
 or be omitted, thus giving the *winner* a 'bye'.
+
+Old records do not need to be deleted for a new tournament. Use the `newTournament`
+method to start recording results for a new tournament. ___SQL views___ are all designed
+to access data from the most current tournament.
+
+Methods access the current tournament ID and store this information with `INSERT`
+commands.
 
 ## Instructions
 1. **Virtual Machine setup:** 
