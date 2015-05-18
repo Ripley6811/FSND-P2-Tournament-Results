@@ -21,8 +21,8 @@ then *omw*.
  347 | John McClane |       3 |    0 |    0 |   0
 (7 rows)
 ```
-The `reportMatch` function was altered to except `None` or be omitted for *loser*,
-this giving the *winner* a 'bye'.
+The *loser* parameter in the `reportMatch` function was altered to except `None`
+or be omitted, thus giving the *winner* a 'bye'.
 
 ## Instructions
 1. **Virtual Machine setup:** 
@@ -37,7 +37,7 @@ The `tournament.sql` file contains all the code to set up the **Tournament** dat
     Type "help" for help.
     vagrant=> \i tournament.sql   
     ``` 
-3. **Running test suite:** 
+3. **Running the test suite:** 
 Leave the `psql` interface and run tournament_test.py for virtual machine prompt.
 
     ```ssh
@@ -106,7 +106,7 @@ Relies on `players`, `results` tables and `match_details`, `player_omw` views.
 
 
 
-### References
+## References
 - PostgreSQL.nabble.com
     - [How to auto enter current date for new record](http://postgresql.nabble.com/Automatic-date-time-td2135132.html)
 - PostgreSQL.org
@@ -118,7 +118,7 @@ Relies on `players`, `results` tables and `match_details`, `player_omw` views.
     - [How to install `psycopg2`](http://stackoverflow.com/a/24131582/1172891)
     - [Returning auto-generated ID from `INSERT` command](http://stackoverflow.com/a/2944335/1172891)
     - [How to `COUNT` only *true* values](http://stackoverflow.com/a/7258383/1172891)
-    - [How to `zip` lists of unequal length](http://stackoverflow.com/questions/11318977/zipping-unequal-lists-in-python-in-to-a-list-which-does-not-drop-any-element-fro)
+    - [How to `zip` lists of unequal length in python](http://stackoverflow.com/questions/11318977/zipping-unequal-lists-in-python-in-to-a-list-which-does-not-drop-any-element-fro)
 - Udacity.com
     - [How to sanitize `INSERT` data](https://www.udacity.com/course/viewer#!/c-ud197-nd/l-3483858580/e-3515398547/m-3515398548)
 - Forums.MySQL.com
