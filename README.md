@@ -39,6 +39,7 @@ The `tournament.sql` file contains all the code to set up the **Tournament** dat
     ``` 
 3. **Running test suite:** 
 Leave the `psql` interface and run tournament_test.py for virtual machine prompt.
+
     ```ssh
     tournament=> \q
     vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ python tournament_test.py
