@@ -47,13 +47,16 @@ Run this file at the postgresql prompt:
     vagrant=> \i tournament.sql   
     ``` 
 3. **Running the test suite:** 
-Leave the `psql` interface and run tournament_test.py for virtual machine prompt.
+Leave the `psql` interface and run `tournament_test.py` from virtual machine prompt.
 
     ```ssh
     tournament=> \q
     vagrant@vagrant-ubuntu-trusty-32:/vagrant/tournament$ python tournament_test.py
+    === 1 ===
     1. Old matches can be deleted.
+    === 2 ===
     2. Player records can be deleted.
+    === 3 ===
     3. After deleting, countPlayers() returns zero.
     ...
     ```
@@ -74,62 +77,57 @@ Test cases for `tournament.py` methods.
 
 ## Database Design
 #### Tables
-**`players`** - Stores player name and database ID.
-```
- id | name
-----+------
-```
-
 **`tournaments`** - Stores tournament id, tournament name and date created.
 ```
  id | title | created
 ----+-------+---------
 ```
 
-**`tournament_register`** - Stores a tournament id and player id combination for
-storing who has signed up for particular tournaments.
+**`players`** - Stores player name and database ID.
 ```
- tournament_id | player_id
----------------+-----------
+ id | name | tournament_id
+----+------+---------------
 ```
 
 **`matches`** - Stores match id number, tournament id and round number.
 ```
- id | tournament_id | round
-----+---------------+-------
-```
-
-**`results`** - Stores the match id, player id and whether they won (boolean).
-```
- match_id | player_id | winner
-----------+-----------+--------
+ id | tournament_id | round | winner_id | loser_id
+----+---------------+-------+-----------+----------
 ```
 
 #### Views
 **_`current_tournament`_** - A view with a single value showing the current
 tournament ID.
 
-**_`current_results`_** - A view of the results table only showing current
-tournament results. _Same columns as `results` table._
-
 **_`current_players`_** - A view of the players table only showing current
-tournament participants. _Same columns as `players` table._
+tournament participants. _Same columns as `players` table minus tournament_id._
 
-**_`match_details`_** - A view showing all information for a particular match.
-Relies on `players`, `matches` and `results` tables.
+**_`current_matches`_** - A view of the results table only showing current
+tournament results. _**Similar** columns as `matches` table._
 ```
- match_id | tournament_id | round | winner_id | winner | loser_id | loser
-----------+---------------+-------+-----------+--------+----------+-------
-```
-
-**_`player_OMW`_** - A view for calculating each player's OMW (opponent match wins).
-Relies on `match_details` view and `results` table.
-```
- winner | omw
---------+-----
+ id | round | winner_id | winner_name | loser_id | loser_name
+----+-------+-----------+-------------+----------+------------
 ```
 
-**_`player_standings`_** - A view for showing each player's standings.
+**_`current_player_wins`_** - A view of player ids and total current tournament wins.
+```
+ player_id | wins
+-----------+------
+```
+
+**_`current_player_byes`_** - A view of player ids and total current tournament byes.
+```
+ player_id | byes
+-----------+------
+```
+
+**_`current_player_wins`_** - A view of player ids and current tournament omw.
+```
+ player_id | omw
+-----------+------
+```
+
+**_`player_standings`_** - A view showing each player's standings.
 Relies on `players`, `results` tables and `match_details`, `player_omw` views.
 ```
  id  |     name     | matches | wins | byes | omw

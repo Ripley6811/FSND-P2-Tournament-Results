@@ -17,7 +17,6 @@ def connect():
 def deleteMatches():
     """Remove all the match records from the database."""
     con, cur = connect()
-    cur.execute('DELETE FROM results;')
     cur.execute('DELETE FROM matches;')
     con.commit()
     con.close()
@@ -26,7 +25,6 @@ def deleteMatches():
 def deletePlayers():
     """Remove all the player records from the database."""
     con, cur = connect()
-    cur.execute('DELETE FROM tournament_register;')
     cur.execute('DELETE FROM players;')
     con.commit()
     con.close()
@@ -50,13 +48,17 @@ def countPlayers():
 
 
 def newTournament(title=''):
-    """Returns the ID for the new tournament record in database.
+    """Creates and returns the ID for the new tournament record in database.
     
     Args:
       title: The name given to the tournament. (OPTIONAL)
+      
+    Returns:
+      ID for the new tournament.
     """
     con, cur = connect()
-    cur.execute('INSERT INTO tournaments (title) VALUES (%s) RETURNING id;', (title,))
+    cur.execute('INSERT INTO tournaments (title) VALUES (%s) RETURNING id;', 
+                (title,))
     tournament_id = cur.fetchone()[0]
     con.commit()
     con.close()
@@ -64,14 +66,13 @@ def newTournament(title=''):
 
 
 def getTournamentID():
-    """Returns the ID for the currently open tournament in the database."""
+    """Returns the ID for the current open tournament in the database."""
     con, cur = connect()
     cur.execute('SELECT id FROM tournaments ORDER BY created DESC LIMIT 1;')
     tournament_id = cur.fetchone()
     con.close()
     return tournament_id
     
-
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -85,11 +86,8 @@ def registerPlayer(name):
     tournament_id = getTournamentID()
     
     con, cur = connect()
-    cur.execute('INSERT INTO players (name) VALUES (%s) RETURNING id;', (name,))
-    player_id = cur.fetchone()[0]
-    cur.execute(
-        'INSERT INTO tournament_register (tournament_id, player_id) VALUES (%s, %s);', 
-        (tournament_id, player_id))
+    cur.execute('INSERT INTO players (name, tournament_id) VALUES (%s, %s);',
+                (name, tournament_id))
     con.commit()
     con.close()
 
@@ -102,24 +100,24 @@ def playerStandings():
     case of a tie.
 
     Returns:
-      A list of tuples, each of which contains (id, name, matches, wins, byes, omw):
+      A list of tuples with the format: (id, name, matches, wins, byes, omw)
         id: the player's unique id (assigned by the database)
         name: the player's full name (as registered)
         matches: the number of matches the player has played
         wins: the number of matches the player has won
         byes: the number of matches won as a 'bye'. Should be 1 or 0.
-        omw: Total wins by players they have played against. (Opponent Match Wins).
+        omw: Total wins by players they have played. (Opponent Match Wins).
     """
     con, cur = connect()
-    cur.execute('SELECT * FROM player_standings')
+    cur.execute('SELECT * FROM player_standings;')
     winner_list = cur.fetchall()
     con.close()
     return winner_list
 
 
 def reportMatch(winner, loser=None, round=1):
-    """Records the outcome of a single match between two players or for reporting
-    a default win or 'bye'.
+    """Records the outcome of a single match between two players or for 
+    reporting a default win or 'bye'.
 
     Args:
       winner:  the id number of the player who won.
@@ -129,13 +127,10 @@ def reportMatch(winner, loser=None, round=1):
     tournament_id = getTournamentID()
     
     con, cur = connect()
-    cur.execute('INSERT INTO matches (tournament_id, round) VALUES (%s, %s) RETURNING id', (tournament_id, round))
-    match_id = cur.fetchone()[0]
-    cur.execute('INSERT INTO results (match_id, player_id, winner) VALUES (%s, %s, %s)', 
-                (match_id, winner, True))
-    if loser != None:
-        cur.execute('INSERT INTO results (match_id, player_id, winner) VALUES (%s, %s, %s)', 
-                    (match_id, loser, False))
+    cur.execute("""
+        INSERT INTO matches (tournament_id, round, winner_id, loser_id) 
+        VALUES (%s, %s, %s, %s);""",
+        (tournament_id, round, winner, loser))
     con.commit()
     con.close()
     
@@ -174,8 +169,8 @@ def swissPairings():
                 ret_list.append((d0, d1, None, None))
             else:
                 ret_list.append((a[0], a[1], None, None))
-    return ret_list
     con.close()
+    return ret_list
 
     
     

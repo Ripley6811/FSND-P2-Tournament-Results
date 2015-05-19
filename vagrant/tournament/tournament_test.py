@@ -5,12 +5,14 @@
 from tournament import *
 
 def testDeleteMatches():
+    print "=== 1 ==="
     deleteMatches()
     newTournament()
     print "1. Old matches can be deleted."
 
 
 def testDelete():
+    print "=== 2 ==="
     deleteMatches()
     deletePlayers()
     newTournament()
@@ -18,6 +20,7 @@ def testDelete():
 
 
 def testCount():
+    print "=== 3 ==="
     newTournament()
     c = countPlayers()
     if c == '0':
@@ -29,6 +32,7 @@ def testCount():
 
 
 def testRegister():
+    print "=== 4 ==="
     newTournament()
     registerPlayer("Chandra Nalaar")
     c = countPlayers()
@@ -39,6 +43,7 @@ def testRegister():
 
 
 def testRegisterCountDelete():
+    print "=== 5 ==="
     newTournament()
     registerPlayer("Markov Chaney")
     registerPlayer("Joe Malik")
@@ -56,6 +61,7 @@ def testRegisterCountDelete():
 
 
 def testStandingsBeforeMatches():
+    print "=== 6 ==="
     newTournament()
     registerPlayer("Melpomene Murray")
     registerPlayer("Randy Schwartz")
@@ -80,6 +86,7 @@ def testStandingsBeforeMatches():
 
 
 def testReportMatches():
+    print "=== 7 ==="
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
@@ -101,6 +108,7 @@ def testReportMatches():
 
 
 def testPairings():
+    print "=== 8 ==="
     newTournament()
     registerPlayer("Twilight Sparkle")
     registerPlayer("Fluttershy")
@@ -124,6 +132,7 @@ def testPairings():
 
 
 def testByeSwap():
+    print "=== 9 ==="
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
@@ -144,6 +153,7 @@ def testByeSwap():
 
     
 def testOMW():
+    print "=== 10 ==="
     newTournament()
     registerPlayer("Bruno Walton")
     registerPlayer("Boots O'Neal")
