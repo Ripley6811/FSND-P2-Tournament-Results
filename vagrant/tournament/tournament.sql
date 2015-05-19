@@ -13,6 +13,7 @@ CREATE DATABASE tournament;
 \c tournament;
 
 
+-- Table for tournaments showing ID, title (optional) and date/time created.
 CREATE TABLE tournaments (
     id serial PRIMARY KEY,
     title text DEFAULT '', -- Optional tournament name
@@ -20,6 +21,7 @@ CREATE TABLE tournaments (
 );
 
 
+-- Table for players showing ID, name and registered tournament.
 CREATE TABLE players (  
     id serial PRIMARY KEY,
     name text,
@@ -27,6 +29,7 @@ CREATE TABLE players (
 );
 
 
+-- Table for individual match, showing tournament ID, round # and winner/loser.
 CREATE TABLE matches (
     id serial PRIMARY KEY,
     tournament_id integer REFERENCES tournaments(id),
@@ -82,7 +85,8 @@ GROUP BY winner_id;
 
 -- View of players opponent match wins total.
 CREATE VIEW current_player_OMW AS
-SELECT winner_id as player_id, COALESCE(CAST(SUM(wins) AS bigint), 0) as OMW
+SELECT winner_id as player_id, 
+       COALESCE(CAST(SUM(wins) AS bigint), 0) as OMW
 FROM current_matches
 LEFT JOIN current_player_wins
 ON current_matches.loser_id = current_player_wins.player_id
@@ -97,13 +101,11 @@ SELECT id, -- Add player name to returned table.
         WHERE id = current_matches.winner_id 
         OR id = current_matches.loser_id) AS matches,
        COALESCE((SELECT wins FROM current_player_wins 
-        WHERE id = current_player_wins.player_id), 0) AS wins, 
+                 WHERE id = current_player_wins.player_id), 0) AS wins, 
        COALESCE((SELECT byes FROM current_player_byes 
-        WHERE id = current_player_byes.player_id), 0) AS byes, 
+                 WHERE id = current_player_byes.player_id), 0) AS byes, 
        COALESCE((SELECT omw FROM current_player_OMW 
-        WHERE id = current_player_OMW.player_id), 0) AS omw
+                 WHERE id = current_player_OMW.player_id), 0) AS omw
 FROM current_players
 ORDER BY wins DESC, omw DESC;
 
-
--- SELECT * FROM player_standings

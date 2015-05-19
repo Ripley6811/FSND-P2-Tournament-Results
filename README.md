@@ -77,19 +77,19 @@ Test cases for `tournament.py` methods.
 
 ## Database Design
 #### Tables
-**`tournaments`** - Stores tournament id, tournament name and date created.
+**`tournaments`** - Stores tournament ID, tournament title (optional) and date created.
 ```
  id | title | created
 ----+-------+---------
 ```
 
-**`players`** - Stores player name and database ID.
+**`players`** - Stores player name and ID, and tournament ID.
 ```
  id | name | tournament_id
 ----+------+---------------
 ```
 
-**`matches`** - Stores match id number, tournament id and round number.
+**`matches`** - Stores match ID number, tournament ID and round number.
 ```
  id | tournament_id | round | winner_id | loser_id
 ----+---------------+-------+-----------+----------
