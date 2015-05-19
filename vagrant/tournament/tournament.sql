@@ -9,6 +9,7 @@
 --
 -- Remember: Always put string and date values inside single quotes.
 
+DROP DATABASE IF EXISTS tournament;
 CREATE DATABASE tournament;
 \c tournament;
 
